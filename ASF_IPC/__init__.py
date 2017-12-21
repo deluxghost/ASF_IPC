@@ -66,15 +66,15 @@ class IPC(object):
         address = self.root_url + '/Api/Bot/' + botnames
         self._delete(address)
 
-    def post(self, botnames, config, keep_sensitive=True):
-        botnames = self._botjoin(botnames)
-        address = self.root_url + '/Api/Bot/' + botnames
+    def post(self, botname, config, keep_sensitive=True):
+        botname = urlparse.quote_plus(botname)
+        address = self.root_url + '/Api/Bot/' + botname
         headers = {'Content-Type': 'application/json'}
         payload = {
             'BotConfig': config,
             'KeepSensitiveDetails': keep_sensitive
         }
-        return self._post(address, payload, headers)
+        self._post(address, payload, headers)
 
     def command(self, cmd):
         cmd = urlparse.quote_plus(cmd)

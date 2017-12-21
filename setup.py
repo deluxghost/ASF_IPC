@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ASF_IPC',
-    version='1.0.0',
+    version='1.0.1',
     packages=['ASF_IPC'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -19,7 +19,7 @@ setup(
     author='deluxghost',
     author_email='deluxghost@gmail.com',
     description='A simple Python 3 library of ArchiSteamFarm IPC API',
-    long_description='A simple Python 3 library of ArchiSteamFarm IPC API',
+    long_description='Check GitHub page for usages.',
     license='GPL v3',
     url='https://github.com/deluxghost/ASF_IPC/'
 )
