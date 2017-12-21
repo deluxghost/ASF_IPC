@@ -14,7 +14,7 @@ class GenericResponse(object):
         405: error.ASF_NotAllowed,
         406: error.ASF_NotAcceptable,
         411: error.ASF_LengthRequired,
-        504: error.ASF_NotImplemented
+        501: error.ASF_NotImplemented
     }
 
     def __init__(self, response):
