@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='ASF_IPC',
-    version='1.0.3',
+    version='1.0.4',
     packages=['ASF_IPC'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
