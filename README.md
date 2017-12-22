@@ -1,5 +1,9 @@
 # ASF_IPC
 
+[![license](https://img.shields.io/github/license/deluxghost/ASF_IPC.svg?style=flat-square)](https://github.com/deluxghost/ASF_IPC/blob/master/LICENSE)
+[![PyPI](https://img.shields.io/badge/Python-3-blue.svg?style=flat-square)](https://pypi.python.org/pypi/ASF-IPC)
+[![PyPI](https://img.shields.io/pypi/v/ASF-IPC.svg?style=flat-square)](https://pypi.python.org/pypi/ASF-IPC)
+
 A simple Python 3 library of [ArchiSteamFarm IPC API](https://github.com/JustArchi/ArchiSteamFarm/wiki/IPC)
 
 ## Examples
