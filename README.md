@@ -2,6 +2,10 @@
 
 A simple Python 3 library of [ArchiSteamFarm IPC API](https://github.com/JustArchi/ArchiSteamFarm/wiki/IPC)
 
+## Examples
+
+* [telegram-asf](https://github.com/deluxghost/telegram-asf)
+
 ## Installation
 
 ```shell
@@ -21,29 +25,29 @@ api = asf.IPC(host='127.0.0.1', port=1242, password='blablabla')
 ### Fetch status of bots
 
 ```python
-data = api.get('name of bot') # One bot
-data = api.get(['name', 'of', 'bots']) # Multiple bots
+data = api.get_bot('name of bot') # One bot
+data = api.get_bot(['name', 'of', 'bots']) # Multiple bots
 ```
 
-Note: method `get()` returns `dict`.
+Note: method `get_bot()` returns `dict`.
 
 ### Erase bots
 
 ```python
-api.delete('name of bot') # One bot
-api.delete(['name', 'of', 'bots']) # Multiple bots
+api.delete_bot('name of bot') # One bot
+api.delete_bot(['name', 'of', 'bots']) # Multiple bots
 ```
 
 ### Create/update config of a bot
 
 ```python
-api.post('name of bot', config={'BotName': 'foobar'}, keep_sensitive=True)
+api.post_bot('name of bot', config={'BotName': 'foobar'}, keep_sensitive=True)
 ```
 
 ### Execute command
 
 ```python
-ret = api.command('version')
+message = api.command('version')
 ```
 
 Notee: method `command()` returns `str`.
@@ -55,7 +59,7 @@ data = api.get_structure('ArchiSteamFarm.BotConfig')
 data = api.get_type('ArchiSteamFarm.BotConfig')
 ```
 
-Note: check ASF Wiki for details.
+Note: these methods return `dict`, check ASF Wiki for details.
 
 ## Don't forget to catch errors
 

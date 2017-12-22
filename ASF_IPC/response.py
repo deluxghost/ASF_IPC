@@ -14,6 +14,7 @@ class GenericResponse(object):
         405: error.ASF_NotAllowed,
         406: error.ASF_NotAcceptable,
         411: error.ASF_LengthRequired,
+        500: error.ASF_InternalServerError,
         501: error.ASF_NotImplemented
     }
 

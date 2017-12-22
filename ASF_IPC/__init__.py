@@ -56,17 +56,17 @@ class IPC(object):
             raise Exception(resp.error)
         return resp.result
 
-    def get(self, botnames, key=None):
+    def get_bot(self, botnames, key=None):
         botnames = self._botjoin(botnames)
         address = self.root_url + '/Api/Bot/' + botnames
         return self._get(address)
 
-    def delete(self, botnames):
+    def delete_bot(self, botnames):
         botnames = self._botjoin(botnames)
         address = self.root_url + '/Api/Bot/' + botnames
         self._delete(address)
 
-    def post(self, botname, config, keep_sensitive=True):
+    def post_bot(self, botname, config, keep_sensitive=True):
         botname = urlparse.quote_plus(botname)
         address = self.root_url + '/Api/Bot/' + botname
         headers = {'Content-Type': 'application/json'}

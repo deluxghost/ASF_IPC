@@ -81,6 +81,16 @@ class ASF_LengthRequired(ASF_Error):
         return self.value
 
 
+class ASF_InternalServerError(ASF_Error):
+
+    def __init__(self, value):
+        super(ASF_InternalServerError, self).__init__(value)
+        self.value = value
+
+    def __str__(self):
+        return self.value
+
+
 class ASF_NotImplemented(ASF_Error):
 
     def __init__(self, value):
