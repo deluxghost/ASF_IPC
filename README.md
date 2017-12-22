@@ -54,7 +54,7 @@ api.post_bot('name of bot', config={'BotName': 'foobar'}, keep_sensitive=True)
 message = api.command('version')
 ```
 
-Notee: method `command()` returns `str`.
+Note: method `command()` returns `str`.
 
 ### Get structure and type
 
