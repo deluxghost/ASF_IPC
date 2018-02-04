@@ -26,6 +26,12 @@ import ASF_IPC as asf
 api = asf.IPC(host='127.0.0.1', port=1242, password='blablabla')
 ```
 
+### Fetch general data about ASF
+
+```python
+data = api.get_asf()
+```
+
 ### Fetch status of bots
 
 ```python
