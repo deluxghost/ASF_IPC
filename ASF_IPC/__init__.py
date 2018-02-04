@@ -56,6 +56,10 @@ class IPC(object):
             raise Exception(resp.error)
         return resp.result
 
+    def get_asf(self):
+        address = self.root_url + '/Api/ASF'
+        return self._get(address)
+
     def get_bot(self, botnames, key=None):
         botnames = self._botjoin(botnames)
         address = self.root_url + '/Api/Bot/' + botnames
