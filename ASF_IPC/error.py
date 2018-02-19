@@ -7,95 +7,39 @@ class ASF_Error(Exception):
         super(ASF_Error, self).__init__()
         self.message = message
 
-    def __str__(self):
-        return self.message
-
-
-class ASF_BadRequest(ASF_Error):
-
-    def __init__(self, message):
-        super(ASF_BadRequest, self).__init__(message)
-        self.message = message
+    def __repr__(self):
+        classname = self.__class__.__name__
+        return '{0}({1})'.format(classname, repr(self.message))
 
     def __str__(self):
         return self.message
 
 
-class ASF_Unauthorized(ASF_Error):
+class ASF_ResponseError(ASF_Error):
 
-    def __init__(self, message):
-        super(ASF_Unauthorized, self).__init__(message)
-        self.message = message
+    def __init__(self, message, code=None):
+        super(ASF_ResponseError, self).__init__(message)
+        self.code = code
+
+    def __repr__(self):
+        classname = self.__class__.__name__
+        if self.code:
+            return '{0}({1}, {2})'.format(classname, repr(self.message), repr(self.code))
+        return '{0}({1})'.format(classname, repr(self.message))
 
     def __str__(self):
+        if self.code:
+            return '{0} - {1}'.format(self.code, self.message)
         return self.message
 
 
-class ASF_Forbidden(ASF_Error):
+class ASF_ConnectionError(ASF_Error):
 
-    def __init__(self, message):
-        super(ASF_Forbidden, self).__init__(message)
-        self.message = message
+    def __init__(self, url):
+        super(ASF_ConnectionError, self).__init__('')
+        self.url = url
+        self.message = 'Cannot establish connection to: {0}'.format(url)
 
-    def __str__(self):
-        return self.message
-
-
-class ASF_NotFound(ASF_Error):
-
-    def __init__(self, message):
-        super(ASF_NotFound, self).__init__(message)
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
-
-class ASF_NotAllowed(ASF_Error):
-
-    def __init__(self, message):
-        super(ASF_NotAllowed, self).__init__(message)
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
-
-class ASF_NotAcceptable(ASF_Error):
-
-    def __init__(self, message):
-        super(ASF_NotAcceptable, self).__init__(message)
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
-
-class ASF_LengthRequired(ASF_Error):
-
-    def __init__(self, message):
-        super(ASF_LengthRequired, self).__init__(message)
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
-
-class ASF_InternalServerError(ASF_Error):
-
-    def __init__(self, message):
-        super(ASF_InternalServerError, self).__init__(message)
-        self.message = message
-
-    def __str__(self):
-        return self.message
-
-
-class ASF_NotImplemented(ASF_Error):
-
-    def __init__(self, message):
-        super(ASF_NotImplemented, self).__init__(message)
-        self.message = message
-
-    def __str__(self):
-        return self.message
+    def __repr__(self):
+        classname = self.__class__.__name__
+        return '{0}({1})'.format(classname, repr(self.url))

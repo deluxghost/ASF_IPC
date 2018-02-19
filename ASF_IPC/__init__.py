@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+import posixpath
 import urllib.parse as urlparse
 import requests
 
+from . import error
 from . import response
 
 ALLBOT = 'ASF'
@@ -9,19 +11,16 @@ ALLBOT = 'ASF'
 
 class IPC(object):
 
-    def __init__(self, host='127.0.0.1', port=1242, password='', timeout=5):
-        self.host = host
-        self.port = port
+    def __init__(self, ipc='http://127.0.0.1:1242/', password='', timeout=5):
+        self.ipc = ipc
         self.password = password
-        self.root_url = 'http://{0}:{1}'.format(host, port)
         self.timeout = timeout
 
     @classmethod
     def _botjoin(cls, bots):
         botnames = bots
-        if isinstance(botnames, (list, tuple)):
+        if isinstance(botnames, (list, tuple, set)):
             botnames = ','.join(botnames)
-        botnames = urlparse.quote_plus(botnames)
         return botnames
 
     def _add_auth(self, headers=None):
@@ -33,64 +32,82 @@ class IPC(object):
             auth_headers['Authentication'] = self.password
         return auth_headers
 
-    def _get(self, url, headers=None):
+    def _build_endpoint(self, endpoint, keyword=None):
+        ipc_split = list(urlparse.urlsplit(self.ipc))
+        ipc_split[2] = posixpath.join(ipc_split[2], 'Api', endpoint)
+        if keyword:
+            keyword = urlparse.quote_plus(keyword)
+            ipc_split[2] = posixpath.join(ipc_split[2], keyword)
+        return urlparse.urlunsplit(ipc_split)
+
+    def get(self, endpoint, keyword=None, headers=None):
+        url = self._build_endpoint(endpoint, keyword)
         headers = self._add_auth(headers)
-        resp = requests.get(url, headers=headers, timeout=self.timeout)
+        try:
+            resp = requests.get(url, headers=headers, timeout=self.timeout)
+        except requests.exceptions.ConnectionError:
+            raise error.ASF_ConnectionError(url)
         resp = response.GenericResponse(resp)
-        if not resp.success:
-            raise Exception(resp.error)
         return resp.result
 
-    def _delete(self, url, headers=None):
+    def delete(self, endpoint, keyword=None, headers=None):
+        url = self._build_endpoint(endpoint, keyword)
         headers = self._add_auth(headers)
-        resp = requests.delete(url, headers=headers, timeout=self.timeout)
+        try:
+            resp = requests.delete(url, headers=headers, timeout=self.timeout)
+        except requests.exceptions.ConnectionError:
+            raise error.ASF_ConnectionError(url)
         resp = response.GenericResponse(resp)
-        if not resp.success:
-            raise Exception(resp.error)
-
-    def _post(self, url, data=None, headers=None):
-        headers = self._add_auth(headers)
-        resp = requests.post(url, json=data, headers=headers, timeout=self.timeout)
-        resp = response.GenericResponse(resp)
-        if not resp.success:
-            raise Exception(resp.error)
         return resp.result
+
+    def post(self, endpoint, keyword=None, headers=None, body=None, is_json=False):
+        url = self._build_endpoint(endpoint, keyword)
+        headers = self._add_auth(headers)
+        try:
+            if is_json:
+                headers['Content-Type'] = 'application/json'
+                resp = requests.post(url, json=body, headers=headers, timeout=self.timeout)
+            else:
+                resp = requests.post(url, data=body, headers=headers, timeout=self.timeout)
+        except requests.exceptions.ConnectionError:
+            raise error.ASF_ConnectionError(url)
+        resp = response.GenericResponse(resp)
+        return resp.result
+
+    def post_json(self, endpoint, keyword=None, headers=None, body=None):
+        return self.post(endpoint, keyword, headers, body, is_json=True)
 
     def get_asf(self):
-        address = self.root_url + '/Api/ASF'
-        return self._get(address)
+        return self.get('ASF')
 
-    def get_bot(self, botnames, key=None):
+    def get_bot(self, botnames):
         botnames = self._botjoin(botnames)
-        address = self.root_url + '/Api/Bot/' + botnames
-        return self._get(address)
+        return self.get('Bot', botnames)
 
     def delete_bot(self, botnames):
         botnames = self._botjoin(botnames)
-        address = self.root_url + '/Api/Bot/' + botnames
-        self._delete(address)
+        return self.delete('Bot', botnames)
 
-    def post_bot(self, botname, config, keep_sensitive=True):
-        botname = urlparse.quote_plus(botname)
-        address = self.root_url + '/Api/Bot/' + botname
-        headers = {'Content-Type': 'application/json'}
+    def post_bot(self, botname, config, **kwargs):
         payload = {
             'BotConfig': config,
-            'KeepSensitiveDetails': keep_sensitive
+            'KeepSensitiveDetails': True
         }
-        self._post(address, payload, headers)
+        for key, value in kwargs.items():
+            payload[key] = value
+        return self.post_json('Bot', botname, body=payload)
 
     def command(self, cmd):
-        cmd = urlparse.quote_plus(cmd)
-        address = self.root_url + '/Api/Command/' + cmd
-        return self._post(address)
+        return self.post('Command', cmd)
 
-    def get_structure(self, name):
-        name = urlparse.quote_plus(name)
-        address = self.root_url + '/Api/Structure/' + name
-        return self._get(address)
+    def get_structure(self, structure_name):
+        return self.get('Structure', structure_name)
 
-    def get_type(self, name):
-        name = urlparse.quote_plus(name)
-        address = self.root_url + '/Api/Type/' + name
-        return self._get(address)
+    def get_type(self, type_name):
+        return self.get('Type', type_name)
+
+    def post_games_to_redeem_in_background(self, botname, games):
+        payload = {
+            'GamesToRedeemInBackground': games
+        }
+        return self.post_json('GamesToRedeemInBackground', botname, body=payload)
