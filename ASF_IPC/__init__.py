@@ -120,7 +120,8 @@ class IPC(object):
 
     async def get_log(self):
         ws_url = self._build_endpoint('Log', ws=True)
-        async with websockets.connect(ws_url) as websocket:
+        headers = self._add_auth()
+        async with websockets.connect(ws_url, extra_headers=headers) as websocket:
             while True:
                 resp = await websocket.recv()
                 resp = response.GenericResponse(resp)
