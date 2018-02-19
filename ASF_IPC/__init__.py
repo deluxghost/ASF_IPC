@@ -125,4 +125,6 @@ class IPC(object):
             while True:
                 resp = await websocket.recv()
                 resp = response.WebsocketResponse(resp)
-                yield resp.result
+                status = yield resp.result
+                if status:
+                    break
