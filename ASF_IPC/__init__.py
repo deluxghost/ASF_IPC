@@ -124,7 +124,7 @@ class IPC(object):
         ws_url = self._build_endpoint('Log', ws=True)
         headers = self._add_auth()
         try:
-            websocket = websockets.connect(ws_url, extra_headers=headers)
+            websocket = await websockets.connect(ws_url, extra_headers=headers)
         except ConnectionRefusedError:
             raise error.ASF_ConnectionError(ws_url)
         while True:
