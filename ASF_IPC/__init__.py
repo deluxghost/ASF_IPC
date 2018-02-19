@@ -124,5 +124,5 @@ class IPC(object):
         async with websockets.connect(ws_url, extra_headers=headers) as websocket:
             while True:
                 resp = await websocket.recv()
-                resp = response.GenericResponse(resp)
+                resp = response.WebsocketResponse(resp)
                 yield resp.result
