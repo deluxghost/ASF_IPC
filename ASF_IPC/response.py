@@ -7,7 +7,10 @@ from . import error
 class GenericResponse(object):
 
     def __init__(self, response):
-        code = response.status_code
+        code = None
+        message = None
+        if hasattr(response, 'status_code'):
+            code = response.status_code
         message = None
         try:
             json_content = response.json()
