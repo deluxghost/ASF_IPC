@@ -2,8 +2,10 @@
 import asyncio
 import posixpath
 import urllib.parse as urlparse
+from http.client import responses
 import requests
 import websockets
+from websockets.exceptions import CLOSE_CODES
 
 from . import error
 from . import response
@@ -121,8 +123,28 @@ class IPC(object):
     async def get_log(self):
         ws_url = self._build_endpoint('Log', ws=True)
         headers = self._add_auth()
-        async with websockets.connect(ws_url, extra_headers=headers) as websocket:
-            while True:
+        try:
+            websocket = websockets.connect(ws_url, extra_headers=headers)
+        except ConnectionRefusedError:
+            raise error.ASF_ConnectionError(ws_url)
+        while True:
+            try:
                 resp = await websocket.recv()
-                resp = response.WebsocketResponse(resp)
-                yield resp.result
+            except websockets.exceptions.InvalidStatusCode as e:
+                code = None
+                message = ''
+                if hasattr(e, 'status_code'):
+                    code = e.status_code
+                    if code in CLOSE_CODES:
+                        message = CLOSE_CODES[code]
+                    elif code in responses:
+                        message = responses[code]
+                    elif hasattr(e, 'message'):
+                        message = e.message
+                    else:
+                        message = 'Unknown'
+                elif hasattr(e, message):
+                    message = e.message
+                raise error.ASF_ResponseError(message, code)
+            resp = response.WebsocketResponse(resp)
+            yield resp.result
