@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+import asyncio
 import posixpath
 import urllib.parse as urlparse
 import requests
+import websockets
 
 from . import error
 from . import response
@@ -32,12 +34,16 @@ class IPC(object):
             auth_headers['Authentication'] = self.password
         return auth_headers
 
-    def _build_endpoint(self, endpoint, keyword=None):
+    def _build_endpoint(self, endpoint, keyword=None, ws=False):
         ipc_split = list(urlparse.urlsplit(self.ipc))
         ipc_split[2] = posixpath.join(ipc_split[2], 'Api', endpoint)
         if keyword:
             keyword = urlparse.quote_plus(keyword)
             ipc_split[2] = posixpath.join(ipc_split[2], keyword)
+        if ws and ipc_split[0] == 'http':
+            ipc_split[0] = 'ws'
+        elif ws and ipc_split[0] == 'https':
+            ipc_split[0] = 'wss'
         return urlparse.urlunsplit(ipc_split)
 
     def get(self, endpoint, keyword=None, headers=None):
@@ -111,3 +117,11 @@ class IPC(object):
             'GamesToRedeemInBackground': games
         }
         return self.post_json('GamesToRedeemInBackground', botname, body=payload)
+
+    async def get_log(self):
+        ws_url = self._build_endpoint('Log', ws=True)
+        async with websockets.connect(ws_url) as websocket:
+            while True:
+                resp = await websocket.recv()
+                resp = response.GenericResponse(resp)
+                yield resp.result
