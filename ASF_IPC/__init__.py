@@ -28,7 +28,7 @@ class IPC(object):
     async def stop_log(self):
         if self.wslog is None:
             return
-        await self.wslog.close()
+        await self.wslog.ws_client.close()
         self.wslog = None
 
     @classmethod
