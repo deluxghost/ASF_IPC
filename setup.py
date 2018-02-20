@@ -14,7 +14,8 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     install_requires=[
-        'requests'
+        'requests',
+        'websockets'
     ],
     author='deluxghost',
     author_email='deluxghost@gmail.com',
