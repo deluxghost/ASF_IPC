@@ -136,7 +136,7 @@ class IPC(object):
             while True:
                 try:
                     resp = await websocket.recv()
+                    resp = response.WebsocketResponse(resp)
+                    yield resp.result
                 except websockets.exceptions.ConnectionClosed:
-                    yield
-                resp = response.WebsocketResponse(resp)
-                yield resp.result
+                    yield None
