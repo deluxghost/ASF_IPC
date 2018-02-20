@@ -134,6 +134,9 @@ class IPC(object):
     async def get_log(self):
         async with self.wslog as websocket:
             while True:
-                resp = await websocket.recv()
+                try:
+                    resp = await websocket.recv()
+                except websockets.exceptions.ConnectionClosed:
+                    yield
                 resp = response.WebsocketResponse(resp)
                 yield resp.result
