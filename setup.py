@@ -3,14 +3,14 @@ from setuptools import setup
 
 setup(
     name='ASF_IPC',
-    version='1.1.0',
+    version='1.1.1',
     packages=['ASF_IPC'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.6'
+        'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     install_requires=[
