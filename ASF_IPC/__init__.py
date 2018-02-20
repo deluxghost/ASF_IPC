@@ -17,6 +17,19 @@ class IPC(object):
         self.ipc = ipc
         self.password = password
         self.timeout = timeout
+        self.wslog = None
+
+    async def start_log(self):
+        await self.stop_log()
+        ws_url = self._build_endpoint('Log', ws=True)
+        headers = self._add_auth()
+        self.wslog = websockets.connect(ws_url, extra_headers=headers)
+
+    async def stop_log(self):
+        if self.wslog is None:
+            return
+        await self.wslog.close()
+        self.wslog = None
 
     @classmethod
     def _botjoin(cls, bots):
@@ -119,12 +132,8 @@ class IPC(object):
         return self.post_json('GamesToRedeemInBackground', botname, body=payload)
 
     async def get_log(self):
-        ws_url = self._build_endpoint('Log', ws=True)
-        headers = self._add_auth()
-        async with websockets.connect(ws_url, extra_headers=headers) as websocket:
+        async with self.wslog as websocket:
             while True:
                 resp = await websocket.recv()
                 resp = response.WebsocketResponse(resp)
-                status = yield resp.result
-                if status:
-                    break
+                yield resp.result
