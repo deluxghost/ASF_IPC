@@ -12,7 +12,8 @@ class ASF_Error(Exception):
         return '{0}({1})'.format(classname, repr(self.message))
 
     def __str__(self):
-        return self.message
+        classname = self.__class__.__name__
+        return '{0}: {1}'.format(classname, self.message)
 
 
 class ASF_ResponseError(ASF_Error):
@@ -28,9 +29,10 @@ class ASF_ResponseError(ASF_Error):
         return '{0}({1})'.format(classname, repr(self.message))
 
     def __str__(self):
+        classname = self.__class__.__name__
         if self.code:
-            return '{0} - {1}'.format(self.code, self.message)
-        return self.message
+            return '{0}: {1} - {2}'.format(classname, self.code, self.message)
+        return '{0}: {1}'.format(classname, self.message)
 
 
 class ASF_ConnectionError(ASF_Error):
@@ -43,3 +45,7 @@ class ASF_ConnectionError(ASF_Error):
     def __repr__(self):
         classname = self.__class__.__name__
         return '{0}({1})'.format(classname, repr(self.url))
+
+class ASF_WebsocketNotStarted(ASF_Error):
+
+    pass

@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='ASF_IPC',
-    version='1.1.1',
+    version='1.1.2',
     packages=['ASF_IPC'],
     classifiers=[
         'Development Status :: 4 - Beta',

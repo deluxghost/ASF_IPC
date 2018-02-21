@@ -132,6 +132,8 @@ class IPC(object):
         return self.post_json('GamesToRedeemInBackground', botname, body=payload)
 
     async def get_log(self):
+        if self.wslog is None:
+            raise error.ASF_WebsocketNotStarted('Websocket client isn\'t started, try `start_log()` first?')
         async with self.wslog as websocket:
             while True:
                 try:
