@@ -1,9 +1,25 @@
 # -*- coding: utf-8 -*-
+import codecs
+import os
+import re
 from setuptools import setup
+
+
+def read(*parts):
+    here = os.path.abspath(os.path.dirname(__file__))
+    with codecs.open(os.path.join(here, *parts), 'r') as fp:
+        return fp.read()
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
 setup(
     name='ASF_IPC',
-    version='1.1.2',
+    version=find_version("ASF_IPC", "__init__.py"),
     packages=['ASF_IPC'],
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -13,6 +29,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
+    python_requires='>=3.6, <4',
     install_requires=[
         'requests',
         'websockets'

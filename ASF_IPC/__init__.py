@@ -8,6 +8,7 @@ import websockets
 from . import error
 from . import response
 
+__version__ = '1.1.3'
 ALLBOT = 'ASF'
 
 
@@ -17,18 +18,6 @@ class IPC(object):
         self.ipc = ipc
         self.password = password
         self.timeout = timeout
-        self.wslog = None
-
-    async def start_log(self):
-        await self.stop_log()
-        ws_url = self._build_endpoint('Log', ws=True)
-        headers = self._add_auth()
-        self.wslog = websockets.connect(ws_url, extra_headers=headers)
-
-    async def stop_log(self):
-        if self.wslog is None:
-            return
-        await self.wslog.ws_client.close()
         self.wslog = None
 
     @classmethod
@@ -99,6 +88,14 @@ class IPC(object):
     def get_asf(self):
         return self.get('ASF')
 
+    def post_asf(self, global_config, **kwargs):
+        payload = {
+            'GlobalConfig': global_config
+        }
+        for key, value in kwargs.items():
+            payload[key] = value
+        return self.post_json('ASF', body=payload)
+
     def get_bot(self, botnames):
         botnames = self._botjoin(botnames)
         return self.get('Bot', botnames)
@@ -107,17 +104,23 @@ class IPC(object):
         botnames = self._botjoin(botnames)
         return self.delete('Bot', botnames)
 
-    def post_bot(self, botname, config, **kwargs):
+    def post_bot(self, botname, bot_config, **kwargs):
         payload = {
-            'BotConfig': config,
+            'BotConfig': bot_config,
             'KeepSensitiveDetails': True
         }
         for key, value in kwargs.items():
             payload[key] = value
         return self.post_json('Bot', botname, body=payload)
 
-    def command(self, cmd):
+    def get_command(self, cmd):
+        return self.get('Command', cmd)
+
+    def post_command(self, cmd):
         return self.post('Command', cmd)
+
+    def command(self, cmd):
+        return self.post_command(cmd)
 
     def get_structure(self, structure_name):
         return self.get('Structure', structure_name)
@@ -125,11 +128,25 @@ class IPC(object):
     def get_type(self, type_name):
         return self.get('Type', type_name)
 
-    def post_games_to_redeem_in_background(self, botname, games):
+    def post_games_to_redeem_in_background(self, botname, games, **kwargs):
         payload = {
             'GamesToRedeemInBackground': games
         }
+        for key, value in kwargs.items():
+            payload[key] = value
         return self.post_json('GamesToRedeemInBackground', botname, body=payload)
+
+    async def start_log(self):
+        await self.stop_log()
+        ws_url = self._build_endpoint('Log', ws=True)
+        headers = self._add_auth()
+        self.wslog = websockets.connect(ws_url, extra_headers=headers)
+
+    async def stop_log(self):
+        if self.wslog is None:
+            return
+        await self.wslog.ws_client.close()
+        self.wslog = None
 
     async def get_log(self):
         if self.wslog is None:
