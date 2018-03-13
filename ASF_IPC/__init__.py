@@ -136,6 +136,9 @@ class IPC(object):
             payload[key] = value
         return self.post_json('GamesToRedeemInBackground', botname, body=payload)
 
+    def redeem(self, botname, games, **kwargs):
+        return self.post_games_to_redeem_in_background(botname, games, **kwargs)
+
     async def start_log(self):
         await self.stop_log()
         ws_url = self._build_endpoint('Log', ws=True)
