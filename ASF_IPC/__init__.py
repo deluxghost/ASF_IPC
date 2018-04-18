@@ -113,9 +113,6 @@ class IPC(object):
             payload[key] = value
         return self.post_json('Bot', botname, body=payload)
 
-    def get_command(self, cmd):
-        return self.get('Command', cmd)
-
     def post_command(self, cmd):
         return self.post('Command', cmd)
 
