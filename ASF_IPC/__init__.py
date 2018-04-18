@@ -8,7 +8,7 @@ import websockets
 from . import error
 from . import response
 
-__version__ = '1.1.4'
+__version__ = '1.1.5'
 ALLBOT = 'ASF'
 
 
