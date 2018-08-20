@@ -8,7 +8,7 @@ import websockets
 from . import error
 from . import response
 
-__version__ = '1.1.5'
+__version__ = '1.2.0'
 ALLBOT = 'ASF'
 
 
@@ -90,7 +90,8 @@ class IPC(object):
 
     def post_asf(self, global_config, **kwargs):
         payload = {
-            'GlobalConfig': global_config
+            'GlobalConfig': global_config,
+            'KeepSensitiveDetails': True
         }
         for key, value in kwargs.items():
             payload[key] = value
@@ -125,6 +126,14 @@ class IPC(object):
     def get_type(self, type_name):
         return self.get('Type', type_name)
 
+    def get_games_to_redeem_in_background(self, botnames):
+        botnames = self._botjoin(botnames)
+        return self.get('GamesToRedeemInBackground', botnames)
+
+    def delete_games_to_redeem_in_background(self, botnames):
+        botnames = self._botjoin(botnames)
+        return self.delete('GamesToRedeemInBackground', botnames)
+
     def post_games_to_redeem_in_background(self, botname, games, **kwargs):
         payload = {
             'GamesToRedeemInBackground': games
@@ -133,7 +142,13 @@ class IPC(object):
             payload[key] = value
         return self.post_json('GamesToRedeemInBackground', botname, body=payload)
 
-    def redeem(self, botname, games, **kwargs):
+    def get_redeem(self, botnames):
+        return self.get_games_to_redeem_in_background(botnames)
+
+    def delete_redeem(self, botnames):
+        return self.delete_games_to_redeem_in_background(botnames)
+
+    def post_redeem(self, botname, games, **kwargs):
         return self.post_games_to_redeem_in_background(botname, games, **kwargs)
 
     async def start_log(self):
