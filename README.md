@@ -3,9 +3,9 @@
 [![license](https://img.shields.io/github/license/deluxghost/ASF_IPC.svg?style=flat-square)](https://github.com/deluxghost/ASF_IPC/blob/master/LICENSE)
 [![PyPI](https://img.shields.io/badge/Python-3.6-blue.svg?style=flat-square)](https://pypi.python.org/pypi/ASF-IPC)
 [![PyPI](https://img.shields.io/pypi/v/ASF-IPC.svg?style=flat-square)](https://pypi.python.org/pypi/ASF-IPC)
-[![ASF](https://img.shields.io/badge/ASF-3.1.0.5-orange.svg?style=flat-square)](https://github.com/JustArchi/ArchiSteamFarm)
+[![ASF](https://img.shields.io/badge/ASF-3.3.0.3%20supported-orange.svg?style=flat-square)](https://github.com/JustArchi/ArchiSteamFarm)
 
-A simple Python 3.6+ library of [ArchiSteamFarm IPC API](https://github.com/JustArchi/ArchiSteamFarm/wiki/IPC)
+A simple Python 3.6+ wrapper of [ArchiSteamFarm IPC API](https://github.com/JustArchi/ArchiSteamFarm/wiki/IPC)
 
 ## Examples
 
