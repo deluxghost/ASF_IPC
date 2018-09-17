@@ -8,7 +8,7 @@ import websockets
 from . import error
 from . import response
 
-__version__ = '1.2.0'
+__version__ = '1.3.0'
 ALLBOT = 'ASF'
 
 
@@ -40,7 +40,7 @@ class IPC(object):
         ipc_split = list(urlparse.urlsplit(self.ipc))
         ipc_split[2] = posixpath.join(ipc_split[2], 'Api', endpoint)
         if keyword:
-            keyword = urlparse.quote_plus(keyword)
+            keyword = urlparse.quote(keyword)
             ipc_split[2] = posixpath.join(ipc_split[2], keyword)
         if ws and ipc_split[0] == 'http':
             ipc_split[0] = 'ws'
