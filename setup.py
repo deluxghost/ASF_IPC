@@ -10,16 +10,18 @@ def read(*parts):
     with codecs.open(os.path.join(here, *parts), 'r') as fp:
         return fp.read()
 
+
 def find_version(*file_paths):
     version_file = read(*file_paths)
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
     if version_match:
         return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
+    raise RuntimeError('Unable to find version string.')
+
 
 setup(
     name='ASF_IPC',
-    version=find_version("ASF_IPC", "__init__.py"),
+    version=find_version('ASF_IPC', '__init__.py'),
     packages=['ASF_IPC'],
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -31,13 +33,13 @@ setup(
     ],
     python_requires='>=3.6, <4',
     install_requires=[
-        'requests',
-        'websockets'
+        'aiohttp',
+        'pyswagger'
     ],
     author='deluxghost',
     author_email='deluxghost@gmail.com',
     description='A simple Python 3.6+ library of ArchiSteamFarm IPC API',
-    long_description='Check GitHub page for usages.',
+    long_description='Check GitHub page for usage.',
     license='GPL v3',
     url='https://github.com/deluxghost/ASF_IPC/'
 )
