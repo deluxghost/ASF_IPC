@@ -58,7 +58,7 @@ To get a list of all endpoints of ASF, open your web browser and visit the swagg
 
 You can see many endpoints with their path, such as `/Api/Bot/{botNames}`, this endpoint in ASF_IPC is `asf.Api.Bot['botNames']`.
 
-The replacing rules are simple: change `/` to `.` and change `/{variable}`
+The replacing rule is simple: change `/{text}` to `['text']` and change `/` to `.`
 
 Some more examples:
 
