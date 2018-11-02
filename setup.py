@@ -2,6 +2,7 @@
 import codecs
 import os
 import re
+
 from setuptools import setup
 
 
@@ -21,8 +22,8 @@ def find_version(*file_paths):
 
 setup(
     name='ASF_IPC',
-    version=find_version('ASF_IPC', '__init__.py'),
-    packages=['ASF_IPC'],
+    version=find_version('ASF', '__init__.py'),
+    packages=['ASF'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
