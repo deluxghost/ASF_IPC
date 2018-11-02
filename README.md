@@ -36,7 +36,7 @@ async def command(asf, cmd):
     return await asf.Api.Command['command'].post(command=cmd)
 
 async def main():
-    # The IPC initialization time depends on the network
+    # The IPC initialization duration depends on the network
     async with IPC(ipc='http://127.0.0.1:1242', password='YOUR IPC PASSWORD') as asf:
         while True:
             cmd = input('Enter a command: ')
