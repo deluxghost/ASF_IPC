@@ -11,7 +11,7 @@ A simple asynchronous Python 3.6+ wrapper of [ArchiSteamFarm IPC API](https://gi
 
 ## Examples
 
-* [telegram-asf](https://github.com/deluxghost/simple-asf-bot)
+* [simple-asf-bot](https://github.com/deluxghost/simple-asf-bot)
 
 ## Requirements
 
