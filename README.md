@@ -17,7 +17,6 @@ A simple asynchronous Python 3.6+ wrapper of [ArchiSteamFarm IPC API](https://gi
 
 * Python 3.6+
 * aiohttp
-* pyswagger
 
 ## Installation
 
