@@ -33,15 +33,22 @@ This example shows how to send a command to ASF:
 import asyncio
 from ASF import IPC
 
-async def command(cmd):
-    async with IPC(ipc='http://127.0.0.1:1242', password='YOUR IPC PASSWORD') as asf:
-        resp = await asf.Api.Command['command'].post(command=cmd)
-        return resp.result
+async def command(asf, cmd):
+    return await asf.Api.Command['command'].post(command=cmd)
 
-cmd = input('Enter a command: ')
+async def main():
+    # The IPC initialization time depends on the network
+    async with IPC(ipc='http://127.0.0.1:1242', password='YOUR IPC PASSWORD') as asf:
+        while True:
+            cmd = input('Enter a command: ')
+            resp = await command(asf, cmd)
+            if resp.success:
+                print(resp.result)
+            else:
+                print(f'Error: {resp.message}')
+
 loop = asyncio.get_event_loop()
-output = loop.run_until_complete(command(cmd))
-print(output)
+output = loop.run_until_complete(main())
 loop.close()
 ```
 
@@ -51,15 +58,16 @@ To get a list of all endpoints of ASF, open your web browser and visit the swagg
 
 You can see many endpoints with their path, such as `/Api/Bot/{botNames}`, this endpoint in ASF_IPC is `asf.Api.Bot['botNames']`.
 
+The replacing rules are simple: change `/` to `.` and change `/{variable}`
+
 Some more examples:
 
 ```python
-async with IPC(...) as asf:
-    asf.Api.ASF  # /Api/ASF
-    asf.Api.Command['command']  # /Api/Command/{command}
-    asf.Api.Bot['botNames'].Pause  # /Api/Bot/{botNames}/Pause
-    asf.Api.WWW.GitHub.Releases  # /Api/WWW/GitHub/Releases
-    asf.Api.WWW.GitHub.Releases['version']  # /Api/WWW/GitHub/Releases/{version}
+asf.Api.ASF  # /Api/ASF
+asf.Api.Command['command']  # /Api/Command/{command}
+asf.Api.Bot['botNames'].Pause  # /Api/Bot/{botNames}/Pause
+asf.Api.WWW.GitHub.Releases  # /Api/WWW/GitHub/Releases
+asf.Api.WWW.GitHub.Releases['version']  # /Api/WWW/GitHub/Releases/{version}
 ```
 
 ## Send a request
@@ -75,11 +83,11 @@ Some examples:
 
 ```python
 # POST /Api/Command/status%20asf
-resp = await asf.Api.Command['command'].post(command='status asf')
+await asf.Api.Command['command'].post(command='status asf')
 # GET /Api/WWW/GitHub/Releases?count=10
-resp = await asf.Api.WWW.GitHub.Releases.get(params={'count': 10})
+await asf.Api.WWW.GitHub.Releases.get(params={'count': 10})
 # POST /Api/Bot/robot with json body {'BotConfig': ...}
-resp = await asf.Api.Bot['botName'].post(body={'BotConfig': ...}, botName='robot')
+await asf.Api.Bot['botName'].post(body={'BotConfig': ...}, botName='robot')
 ```
 
 ## Get a response
@@ -97,8 +105,21 @@ If ASF_IPC cannot give a value to some attributes, these attributes will be `Non
 Example for `/Api/NLog`:
 
 ```python
-async def get_log():
-    async with IPC(ipc='http://127.0.0.1:1242', password='YOUR IPC PASSWORD') as asf:
-        async for resp in asf.Api.NLog.ws():  # use ws() instead of get(), post()...
+import asyncio
+from ASF import IPC
+
+async def get_log(asf):
+    async for resp in asf.Api.NLog.ws():  # use ws() instead of get(), post()...
+        if resp.success:
             print(resp.result)
+
+async def main():
+    async with IPC(ipc='http://127.0.0.1:1242', password='YOUR IPC PASSWORD') as asf:
+        while True:
+            await get_log(asf)
+
+loop = asyncio.get_event_loop()
+output = loop.run_until_complete(main())
+loop.close()
+
 ```
