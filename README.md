@@ -22,7 +22,7 @@ A simple asynchronous Python 3.6+ wrapper of [ArchiSteamFarm IPC API](https://gi
 ## Installation
 
 ```shell
-pip3 install ASF_IPC
+pip3 install -U ASF_IPC
 ```
 
 ## Getting Started
