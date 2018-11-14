@@ -7,17 +7,21 @@ from . import utils
 
 class IPC:
 
-    def __init__(self, ipc='http://127.0.0.1:1242/', password='', timeout=10):
+    def __init__(self, ipc='http://127.0.0.1:1242/', password='', auth=None, timeout=10):
         self._ipc = ipc
         self._password = password
         self._timeout = timeout
+        if auth is not None:
+            self._auth = aiohttp.BasicAuth(*auth)
+        else:
+            self._auth = None
 
     async def __aenter__(self):
         headers = dict()
         if self._password:
             headers['Authentication'] = self._password
         timeout = aiohttp.ClientTimeout(total=self._timeout)
-        self._session = aiohttp.ClientSession(headers=headers, timeout=timeout)
+        self._session = aiohttp.ClientSession(headers=headers, auth=self._auth, timeout=timeout)
         try:
             async with self._session.get(utils.build_url(self._ipc, '/swagger/ASF/swagger.json')) as resp:
                 self._swagger = await resp.json()
