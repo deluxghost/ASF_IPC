@@ -3,7 +3,7 @@
 [![license](https://img.shields.io/github/license/deluxghost/ASF_IPC.svg?style=flat-square)](https://github.com/deluxghost/ASF_IPC/blob/master/LICENSE)
 [![PyPI](https://img.shields.io/badge/Python-3.6-blue.svg?style=flat-square)](https://pypi.python.org/pypi/ASF-IPC)
 [![PyPI](https://img.shields.io/pypi/v/ASF-IPC.svg?style=flat-square)](https://pypi.python.org/pypi/ASF-IPC)
-[![ASF](https://img.shields.io/badge/ASF-3.4.0.5%20supported-orange.svg?style=flat-square)](https://github.com/JustArchi/ArchiSteamFarm)
+[![ASF](https://img.shields.io/badge/ASF-3.4.0.5--latest%20supported-orange.svg?style=flat-square)](https://github.com/JustArchi/ArchiSteamFarm)
 
 A simple asynchronous Python 3.6+ wrapper of [ArchiSteamFarm IPC API](https://github.com/JustArchi/ArchiSteamFarm/wiki/IPC)
 
@@ -33,7 +33,9 @@ import asyncio
 from ASF import IPC
 
 async def command(asf, cmd):
-    return await asf.Api.Command['command'].post(command=cmd)
+    return await asf.Api.Command.post(body={
+        'Command': cmd
+    })
 
 async def main():
     # The IPC initialization duration depends on the network
@@ -55,18 +57,17 @@ loop.close()
 
 To get a list of all endpoints of ASF, open your web browser and visit the swagger page of your ASF instance (usually `http://127.0.0.1:1242/swagger`).
 
-You can see many endpoints with their path, such as `/Api/Bot/{botNames}`, this endpoint in ASF_IPC is `asf.Api.Bot['botNames']`.
+You can see many endpoints with their paths, such as `/Api/Bot/{botNames}`, this endpoint in ASF_IPC is `asf.Api.Bot['botNames']`. Change separator to `.` and `{}` to `[]`, you will get an endpoint object, which has request methods e.g. `get()`, `post()` etc.
 
-The replacing rule is simple: change `/{text}` to `['text']` and change `/` to `.`
+**Note the `botNames` here is not the value of the argument, to pass value, use kwargs in request methods.**
 
 Some more examples:
 
 ```python
 asf.Api.ASF  # /Api/ASF
-asf.Api.Command['command']  # /Api/Command/{command}
 asf.Api.Bot['botNames'].Pause  # /Api/Bot/{botNames}/Pause
-asf.Api.WWW.GitHub.Releases  # /Api/WWW/GitHub/Releases
-asf.Api.WWW.GitHub.Releases['version']  # /Api/WWW/GitHub/Releases/{version}
+asf.Api.WWW.GitHub.Release  # /Api/WWW/GitHub/Release
+asf.Api.WWW.GitHub.Release['version']  # /Api/WWW/GitHub/Release/{version}
 ```
 
 ## Send a request
@@ -74,17 +75,17 @@ asf.Api.WWW.GitHub.Releases['version']  # /Api/WWW/GitHub/Releases/{version}
 After your endpoint found, you want to send some data to this endpoint, you can use `get()`, `post()`, `put()`, `delete()` methods, these methods have optional arguments:
 
 * `body` (dict): the JSON request body.
-* `params` (dict): the parameters in URL after a `?`, e.g. the `params` of `/Api/WWW/GitHub/Releases?count=10` is `{'count': 10}`
+* `params` (dict): the parameters in URL after a `?`.
 
-If you need to pass parameters in the path of the endpoint, e.g. `{botName}` in `/Api/Bot/{botName}/Redeem`, you can pass them as a keyword parameter of the method.
+If you need to pass values to the parameters in the path, for example `{botName}` in `/Api/Bot/{botName}/Redeem`, you can pass them as kwargs of the method.
 
 Some examples:
 
 ```python
-# POST /Api/Command/status%20asf
-await asf.Api.Command['command'].post(command='status asf')
-# GET /Api/WWW/GitHub/Releases?count=10
-await asf.Api.WWW.GitHub.Releases.get(params={'count': 10})
+# POST /Api/Bot/mainaccount/Pause
+await asf.Api.Bot['botNames'].post(botNames='mainaccount')
+# GET /Api/WWW/GitHub/Release
+await asf.Api.WWW.GitHub.Release.get()
 # POST /Api/Bot/robot with json body {'BotConfig': ...}
 await asf.Api.Bot['botName'].post(body={'BotConfig': ...}, botName='robot')
 ```
